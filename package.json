@@ -1,8 +1,9 @@
 {
   "name": "lit-svelte-stores",
-  "version": "1.0.0",
-  "description": "Lit integration to use svelte stores as cross element state management",
+  "version": "0.0.1",
+  "description": "Lit controller to use svelte stores to manage state",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc",
     "build-watch": "tsc -w",
