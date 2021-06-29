@@ -1,0 +1,31 @@
+{
+  "name": "lit-svelte-stores",
+  "version": "1.0.0",
+  "description": "Lit integration to use svelte stores as cross element state management",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "build-watch": "tsc -w",
+    "demo": "concurrently -k \"npm run build-watch\" \"wds --config demo/web-dev-server.config.mjs\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guillemcordoba/lit-svelte-stores.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guillemcordoba/lit-svelte-stores/issues"
+  },
+  "homepage": "https://github.com/guillemcordoba/lit-svelte-stores#readme",
+  "dependencies": {
+    "lit": "^2.0.0-rc.2",
+    "svelte": "^3.38.3"
+  },
+  "devDependencies": {
+    "@web/dev-server": "^0.1.17",
+    "concurrently": "^6.2.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.4"
+  }
+}
