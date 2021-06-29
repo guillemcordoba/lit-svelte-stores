@@ -7,7 +7,7 @@ Lit controller to use svelte stores as state management.
 ```js
 import { LitElement, html } from "lit";
 import { writable } from "svelte/store";
-import { SvelteStoreController } from "lit-svelte-store";
+import { SvelteStoreController } from "lit-svelte-stores";
 
 const store = writable(0);
 
