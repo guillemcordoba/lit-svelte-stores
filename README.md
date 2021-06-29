@@ -1,6 +1,6 @@
 # lit-svelte-stores
 
-Lit integration to use svelte stores as cross element state management
+Lit controller to use svelte stores as state management.
 
 ## Usage
 
