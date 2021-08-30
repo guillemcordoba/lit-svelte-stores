@@ -7,7 +7,7 @@ Lit controller to use svelte stores as state management.
 ```js
 import { LitElement, html } from "lit";
 import { writable } from "svelte/store";
-import { SvelteStoreController } from "lit-svelte-stores";
+import { StoreController } from "lit-svelte-stores";
 
 const store = writable(0);
 
@@ -18,7 +18,7 @@ setInterval(() => {
 class SampleElement extends LitElement {
   constructor() {
     super();
-    this.store = new SvelteStoreController(this, store);
+    this.store = new StoreController(this, store);
   }
 
   render() {

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "build-watch": "tsc -w",
-    "demo": "concurrently -k \"npm run build-watch\" \"wds --config demo/web-dev-server.config.mjs\""
+    "start": "npm run build && concurrently -k \"npm run build-watch\" \"wds --config demo/web-dev-server.config.mjs\""
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,7 @@
 import { Readable, Unsubscriber } from "svelte/store";
 import { LitElement, ReactiveController } from "lit";
 
-export class SvelteStoreController<T> implements ReactiveController {
+export class StoreController<T> implements ReactiveController {
   value!: T;
 
   private _unsubscribe!: Unsubscriber;
