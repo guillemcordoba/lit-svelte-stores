@@ -1,6 +1,6 @@
 {
   "name": "lit-svelte-stores",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Lit controller to use svelte stores to manage state",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/guillemcordoba/lit-svelte-stores#readme",
   "dependencies": {
+    "@lit-labs/context": "github:holochain-open-dev/context#build",
     "lit": "^2.0.0-rc.2",
     "svelte": "^3.38.3"
   },
