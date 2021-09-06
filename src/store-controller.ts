@@ -1,15 +1,15 @@
 import { Readable, Unsubscriber } from "svelte/store";
 import { ReactiveController, ReactiveElement } from "lit";
 
-export class StoreController<T> implements ReactiveController {
-  value!: T;
+export class StoreController<V> implements ReactiveController {
+  value!: V;
 
-  private _unsubscribe!: Unsubscriber;
+  public _unsubscribe!: Unsubscriber;
 
   constructor(
     protected host: ReactiveElement,
-    protected store: Readable<T>,
-    protected callback?: (value: T) => any
+    protected store: Readable<V>,
+    protected callback?: (value: V) => any
   ) {
     host.addController(this);
   }
