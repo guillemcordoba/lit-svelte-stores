@@ -9,7 +9,7 @@ export class StoreController<T> implements ReactiveController {
   constructor(
     protected host: ReactiveElement,
     protected store: Readable<T>,
-    protected callback: (value: T) => any
+    protected callback?: (value: T) => any
   ) {
     host.addController(this);
   }
