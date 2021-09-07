@@ -17,10 +17,6 @@ export class DynamicStore<V, El extends ReactiveElement>
     host.addController(this);
   }
 
-  hostConnected() {
-    this.resubscribe();
-  }
-
   hostUpdate() {
     this.resubscribe();
   }
