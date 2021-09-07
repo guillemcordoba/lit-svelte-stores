@@ -1,6 +1,6 @@
 {
   "name": "lit-svelte-stores",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Lit controllers and directives to use svelte stores to manage state",
   "main": "dist/index.js",
   "module": "dist/index.js",
