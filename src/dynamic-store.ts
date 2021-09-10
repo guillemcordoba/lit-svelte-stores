@@ -22,7 +22,9 @@ export class DynamicStore<V, El extends ReactiveElement>
   }
 
   hostDisconnected() {
-    this._unsubscribe();
+    if (this._unsubscribe) {
+      this._unsubscribe();
+    }
   }
 
   resubscribe() {
@@ -33,8 +35,10 @@ export class DynamicStore<V, El extends ReactiveElement>
 
       if (store) {
         this._unsubscribe = store.subscribe((value) => {
-          this.value = value;
-          this.host.requestUpdate();
+          if (value !== this.value) {
+            this.value = value;
+            this.host.requestUpdate();
+          }
         });
       }
     }

@@ -16,9 +16,11 @@ export class StoreController<V> implements ReactiveController {
 
   hostConnected() {
     this._unsubscribe = this.store.subscribe((value) => {
-      this.value = value;
-      if (this.callback) this.callback(value);
-      this.host.requestUpdate();
+      if (this.value !== value) {
+        this.value = value;
+        if (this.callback) this.callback(value);
+        this.host.requestUpdate();
+      }
     });
   }
 
