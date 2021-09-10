@@ -9,7 +9,7 @@ export class DynamicStore<V, El extends ReactiveElement>
 {
   value!: V;
 
-  public _unsubscribe!: Unsubscriber;
+  public _unsubscribe: Unsubscriber | undefined;
 
   private _previousStore: Readable<V> | undefined;
 
@@ -22,8 +22,13 @@ export class DynamicStore<V, El extends ReactiveElement>
   }
 
   hostDisconnected() {
+    this.unsubscribe();
+  }
+
+  unsubscribe() {
     if (this._unsubscribe) {
       this._unsubscribe();
+      this._unsubscribe = undefined;
     }
   }
 
@@ -31,7 +36,7 @@ export class DynamicStore<V, El extends ReactiveElement>
     const store = this.getStore();
 
     if (store !== this._previousStore) {
-      if (this._unsubscribe) this._unsubscribe();
+      this.unsubscribe();
 
       if (store) {
         this._unsubscribe = store.subscribe((value) => {
