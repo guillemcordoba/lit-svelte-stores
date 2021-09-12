@@ -18,7 +18,7 @@
     <script type="module">
       import { LitElement, html } from "lit";
       import { get, readable, writable } from "svelte/store";
-      import { DynamicStore } from "../dist";
+      import { StoreSubscriber } from "../dist";
 
       let store = writable(0);
 
@@ -39,7 +39,7 @@
 
         constructor() {
           super();
-          this.store = new DynamicStore(this, () =>
+          this.store = new StoreSubscriber(this, () =>
             !this.loaded ? store : store2
           );
 

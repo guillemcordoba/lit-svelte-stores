@@ -4,16 +4,17 @@ import { ReactiveController, ReactiveElement } from "lit";
 /**
  * Tracks a changing store, derived at each update
  */
-export class DynamicStore<V, El extends ReactiveElement>
-  implements ReactiveController
-{
+export class StoreSubscriber<V> implements ReactiveController {
   value!: V;
 
   public _unsubscribe: Unsubscriber | undefined;
 
   private _previousStore: Readable<V> | undefined;
 
-  constructor(protected host: El, protected getStore: () => Readable<V>) {
+  constructor(
+    protected host: ReactiveElement,
+    protected getStore: () => Readable<V>
+  ) {
     host.addController(this);
   }
 
