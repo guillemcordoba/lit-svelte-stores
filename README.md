@@ -4,14 +4,10 @@ Lit controller to use svelte stores as state management.
 
 ## Usage
 
-### StoreController
-
-If your store doesn't change during the element lifecycle, use `StoreController`:
-
 ```js
 import { LitElement, html } from "lit";
 import { writable } from "svelte/store";
-import { StoreController } from "lit-svelte-stores";
+import { StoreSubscriber } from "lit-svelte-stores";
 
 const store = writable(0);
 
@@ -22,7 +18,7 @@ setInterval(() => {
 class SampleElement extends LitElement {
   constructor() {
     super();
-    this.store = new StoreController(this, store);
+    this.store = new StoreSubscriber(this, () => store);
   }
 
   render() {
@@ -31,14 +27,16 @@ class SampleElement extends LitElement {
 }
 ```
 
-### DynamicStore
+This will trigger a re-render every time the store emits a new value.
 
-If your store changes during the element lifecycle, use the `DynamicStore`
+### Changing the store
+
+If your store changes during the element lifecycle, you can just return a different one in the initialization callback:
 
 ```js
 import { LitElement, html } from "lit";
 import { get, readable, writable } from "svelte/store";
-import { DynamicStore } from "../dist";
+import { StoreSubscriber } from "lit-svelte-stores";
 
 let store = writable(0);
 
@@ -55,7 +53,7 @@ class SampleElement extends LitElement {
 
   constructor() {
     super();
-    this.store = new DynamicStore(this, () => (!this.loaded ? store : store2));
+    this.store = new StoreSubscriber(this, () => (!this.loaded ? store : store2));
 
     setTimeout(() => {
       this.loaded = true;
