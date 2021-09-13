@@ -1,4 +1,4 @@
-import { Readable, Unsubscriber } from "svelte/store";
+import { Readable, Unsubscriber, get } from "svelte/store";
 import { ReactiveController, ReactiveElement } from "lit";
 
 /**
@@ -36,19 +36,16 @@ export class StoreSubscriber<V> implements ReactiveController {
   resubscribe() {
     const store = this.getStore();
 
-    if (store !== this._previousStore) {
+    if (store !== this._previousStore && get(store) !== this.value) {
       this.unsubscribe();
 
       if (store) {
         this._unsubscribe = store.subscribe((value) => {
-          if (value !== this.value) {
-            this.value = value;
-            this.host.requestUpdate();
-          }
+          this.value = value;
+          this.host.requestUpdate();
         });
       }
+      this._previousStore = store;
     }
-
-    this._previousStore = store;
   }
 }
