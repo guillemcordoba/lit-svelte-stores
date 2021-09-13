@@ -33,10 +33,16 @@ export class StoreSubscriber<V> implements ReactiveController {
     }
   }
 
+  shouldResubscribe(store: Readable<V>) {
+    if (store === this._previousStore) return false;
+    if (store && this._previousStore && get(store) === this.value) return false;
+    return true;
+  }
+
   resubscribe() {
     const store = this.getStore();
 
-    if (store !== this._previousStore && get(store) !== this.value) {
+    if (this.shouldResubscribe(store)) {
       this.unsubscribe();
 
       if (store) {
