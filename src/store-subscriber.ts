@@ -13,7 +13,7 @@ export class StoreSubscriber<V> implements ReactiveController {
 
   constructor(
     protected host: ReactiveElement,
-    protected getStore: () => Readable<V>
+    protected getStore: () => Readable<V> | undefined
   ) {
     host.addController(this);
   }
@@ -33,7 +33,7 @@ export class StoreSubscriber<V> implements ReactiveController {
     }
   }
 
-  shouldResubscribe(store: Readable<V>) {
+  shouldResubscribe(store: Readable<V> | undefined) {
     if (store === this._previousStore) return false;
     if (store && this._previousStore && get(store) === this.value) return false;
     return true;
