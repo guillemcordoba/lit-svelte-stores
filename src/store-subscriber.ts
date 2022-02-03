@@ -22,6 +22,10 @@ export class StoreSubscriber<V> implements ReactiveController {
     this.resubscribe();
   }
 
+  hostConnected() {
+    this.resubscribe();
+  }
+
   hostDisconnected() {
     this.unsubscribe();
   }
