@@ -1,5 +1,5 @@
 import { Readable, Unsubscriber, get } from "svelte/store";
-import { ReactiveController, ReactiveElement } from "lit";
+import { ReactiveController, ReactiveControllerHost } from "lit";
 
 /**
  * Tracks a changing store, derived at each update
@@ -12,7 +12,7 @@ export class StoreSubscriber<V> implements ReactiveController {
   private _previousStore: Readable<V> | undefined;
 
   constructor(
-    protected host: ReactiveElement,
+    protected host: ReactiveControllerHost,
     protected getStore: () => Readable<V> | undefined
   ) {
     host.addController(this);
