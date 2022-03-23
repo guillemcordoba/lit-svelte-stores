@@ -16,6 +16,7 @@ export class StoreSubscriber<V> implements ReactiveController {
     protected getStore: () => Readable<V> | undefined
   ) {
     host.addController(this);
+    this.resubscribe();
   }
 
   hostUpdate() {
