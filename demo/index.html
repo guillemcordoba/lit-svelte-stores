@@ -37,7 +37,7 @@
       class SampleElement extends LitElement {
         constructor() {
           super();
-          this.task = new TaskSubscriber(this, promise);
+          this.task = new TaskSubscriber(this, () => promise);
         }
 
         render() {

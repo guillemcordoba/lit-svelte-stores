@@ -8,22 +8,29 @@ export class TaskSubscriber<V>
 {
   _store: Readable<V> | undefined;
 
+  _init = false;
+
   loading: boolean = true;
   error: any = undefined;
 
   constructor(
     protected host: ReactiveControllerHost,
-    protected task: Promise<Readable<V>>
+    protected task: () => Promise<Readable<V>>
   ) {
     super(host, () => undefined);
+  }
 
-    task
+  hostUpdated() {
+    if (this._init) return;
+
+    this.task()
       .then((s) => {
         this._store = s;
         this.loading = false;
       })
       .catch((e) => (this.error = e))
       .finally(() => this.host.requestUpdate());
+    this._init = true;
   }
 
   store() {
