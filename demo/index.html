@@ -18,7 +18,7 @@
     <script type="module">
       import { LitElement, html } from "lit";
       import { get, readable, writable } from "svelte/store";
-      import { StoreSubscriber } from "../dist";
+      import { StoreSubscriber, TaskSubscriber } from "../dist";
 
       let store = writable(0);
 
@@ -28,28 +28,22 @@
 
       let store2 = readable(5000);
 
-      class SampleElement extends LitElement {
-        static get properties() {
-          return {
-            loaded: {
-              type: Boolean,
-            },
-          };
-        }
+      const promise = new Promise((r) =>
+        setTimeout(() => {
+          r(store);
+        }, 3000)
+      );
 
+      class SampleElement extends LitElement {
         constructor() {
           super();
-          this.store = new StoreSubscriber(this, () =>
-            !this.loaded ? store : store2
-          );
-
-          setTimeout(() => {
-            this.loaded = true;
-          }, 2000);
+          this.task = new TaskSubscriber(this, promise);
         }
 
         render() {
-          return html`Count: ${this.store.value}`;
+          if (this.task.loading) return html`Loading...`;
+
+          return html`Count: ${this.task.value}`;
         }
       }
 
