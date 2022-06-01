@@ -42,9 +42,13 @@
         }
 
         render() {
-         // if (this.task.loading) return html`Loading...`;
+          // if (this.task.loading) return html`Loading...`;
 
-          return html`Count: ${this.task.value}
+          return html`Count:
+            ${this.task.render({
+              pending: () => html`Loading`,
+              complete: (v) => v,
+            })}
             <br />
             Count: ${this.store.value}`;
         }
