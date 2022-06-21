@@ -17,7 +17,7 @@
     <sample-element></sample-element>
     <script type="module">
       import { LitElement, html } from "lit";
-      import { get, readable, writable } from "svelte/store";
+      import { get, readable, writable, derived } from "svelte/store";
       import { StoreSubscriber, TaskSubscriber } from "../dist";
 
       let store = writable(0);
@@ -28,17 +28,41 @@
 
       let store2 = readable(5000);
 
-      const promise = new Promise((r) =>
-        setTimeout(() => {
-          r(store);
-        }, 3000)
-      );
+      function doTask(id) {
+        return new Promise((r) =>
+          setTimeout(() => {
+            r(derived(store, (count) => `${id}: ${count}`));
+          }, 3000)
+        );
+      }
 
       class SampleElement extends LitElement {
+        static get properties() {
+          return {
+            id: {
+              type: String,
+            },
+          };
+        }
+
         constructor() {
           super();
-          this.task = new TaskSubscriber(this, () => promise);
+
+          this.task = new TaskSubscriber(
+            this,
+            ([id]) => doTask(id),
+            () => [this.id]
+            );
           this.store = new StoreSubscriber(this, () => store);
+
+          setTimeout(() => {
+            this.id = "ho";
+          }, 6000);
+        }
+
+        firstUpdated() {
+          this.id = "hey";
+
         }
 
         render() {

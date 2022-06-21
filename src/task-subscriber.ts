@@ -1,39 +1,55 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import { Readable } from "svelte/store";
 import { StoreSubscriber } from "./store-subscriber";
+import { ArgsFunction, StatusRenderer, Task, TaskStatus } from "@lit-labs/task";
 
-export class TaskSubscriber<V>
-  extends StoreSubscriber<V>
+export class TaskSubscriber<ARGS extends [...unknown[]], V>
+  extends Task<ARGS, V>
   implements ReactiveController
 {
-  _store: Readable<V> | undefined;
-
+  _storeSubscriber: StoreSubscriber<V> | undefined;
   _init = false;
-
-  loading: boolean = true;
-  error: any = undefined;
 
   constructor(
     protected host: ReactiveControllerHost,
-    protected task: () => Promise<Readable<V>>
+    protected task: (args: ARGS) => Promise<Readable<V>>,
+    protected args?: ArgsFunction<ARGS>
   ) {
-    super(host, () => undefined);
+    super(
+      host,
+      (a: ARGS) => this.runAndSubscribe(a) as unknown as Promise<V>,
+      args
+    );
   }
 
-  hostUpdated() {
-    if (this._init) return;
+  async hostUpdated() {
+    super.hostUpdated();
 
-    this.task()
-      .then((s) => {
-        this._store = s;
-        this.loading = false;
-      })
-      .catch((e) => (this.error = e))
-      .finally(() => this.host.requestUpdate());
-    this._init = true;
+    if (!this._init) {
+      this._init = true;
+      const args = this.args?.();
+      await this.run(args);
+    }
   }
 
-  store() {
-    return this._store;
+  async runAndSubscribe(args: ARGS): Promise<Readable<V>> {
+    if (this._storeSubscriber) {
+      this._storeSubscriber.unsubscribe();
+    }
+
+    const store = await this.task(args);
+    this._storeSubscriber = new StoreSubscriber(this.host, () => store);
+
+    return store;
+  }
+
+  get value(): V | undefined {
+    return this._storeSubscriber?.value;
+  }
+
+  render(renderer: StatusRenderer<V>) {
+    if (this.status === TaskStatus.COMPLETE)
+      return renderer.complete?.(this._storeSubscriber!.value);
+    else super.render(renderer as any);
   }
 }
