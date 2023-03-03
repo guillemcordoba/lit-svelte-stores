@@ -56,7 +56,7 @@ export class StoreSubscriber<V> implements ReactiveController {
       const args = this.resubscribeIfChanged();
       const prev = this._previousArgs;
       this._previousArgs = args;
-      return isEqual(args, prev);
+      return !isEqual(args, prev);
     } else {
       if (store === this._previousStore) return false;
       if (store && this._previousStore && get(store) === this.value)
