@@ -61,7 +61,48 @@ class SampleElement extends LitElement {
   }
 
   render() {
-    return html`Count: ${this.store.value}`;
+    return html`Is loaded: ${this.store.value}`;
+  }
+}
+```
+
+### Being careful with resubscribing
+
+In a lot of use-cases, you want to carefully control when the store gets subscribed to again, to avoid multiple unnecessary element updates.
+
+Imagine we want to recreate a store only when a property in our element changes:
+
+```js
+import { LitElement, html } from "lit";
+import { get, readable, writable } from "svelte/store";
+import { StoreSubscriber } from "lit-svelte-stores";
+
+function fetchAuthor(authorId) {
+  return readable('loading', set => {
+    fetch(`https://some/url/${authorId}`).then(set)
+  })
+}
+
+class SampleElement extends LitElement {
+  static get properties() {
+    return {
+      authorId: {
+        type: String
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.store = new StoreSubscriber(
+      this, 
+      () => fetchAuthor(this.authorId), // This will be executed any time `this.authorId` changes
+      () => [this.authorId]
+    );
+  }
+
+  render() {
+    return html`Author: ${this.store.value}`;
   }
 }
 ```

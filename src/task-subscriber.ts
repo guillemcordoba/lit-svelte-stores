@@ -1,7 +1,7 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import { Readable } from "svelte/store";
-import { StoreSubscriber } from "./store-subscriber";
 import { ArgsFunction, StatusRenderer, Task, TaskStatus } from "@lit-labs/task";
+import { StoreSubscriber } from "./store-subscriber.js";
 
 export class TaskSubscriber<ARGS extends [...unknown[]], V>
   extends Task<ARGS, V>
