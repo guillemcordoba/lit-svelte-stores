@@ -20,7 +20,7 @@ export class StoreSubscriber<V> implements ReactiveController {
     protected host: ReactiveControllerHost,
     protected getStore: () => Readable<V> | undefined,
     protected resubscribeIfChanged?: () => Array<any>,
-    protected notifyPropertyName: string = 'value'
+    protected notifyPropertyName?: string
   ) {
     host.addController(this);
   }
@@ -33,8 +33,9 @@ export class StoreSubscriber<V> implements ReactiveController {
 
       if (store) {
         this._unsubscribe = store.subscribe((value) => {
+          const prevValue = this.value
           this.value = value;
-          this.notify({ [this.notifyPropertyName]: this._previousStore ? get(this._previousStore) : null });
+          this.notify({ [this.notifyPropertyName || 'value']: this.notifyPropertyName ? { value: prevValue } : prevValue });
         });
       }
       this._previousStore = store;
