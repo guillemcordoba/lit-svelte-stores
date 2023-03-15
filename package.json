@@ -6,6 +6,7 @@
   "module": "dist/index.js",
   "type": "module",
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsc",
     "build-watch": "tsc -w",
     "start": "npm run build && concurrently -k \"npm run build-watch\" \"wds --config demo/web-dev-server.config.mjs\""
