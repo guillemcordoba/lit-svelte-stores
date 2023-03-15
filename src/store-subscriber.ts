@@ -1,5 +1,5 @@
 import { Readable, Unsubscriber, get } from "svelte/store";
-import { ReactiveController, ReactiveControllerHost } from "lit";
+import { ReactiveController, ReactiveControllerHost, ReactiveElement } from "lit";
 import isEqual from "lodash-es/isEqual.js";
 
 /**
@@ -19,7 +19,8 @@ export class StoreSubscriber<V> implements ReactiveController {
   constructor(
     protected host: ReactiveControllerHost,
     protected getStore: () => Readable<V> | undefined,
-    protected resubscribeIfChanged?: () => Array<any>
+    protected resubscribeIfChanged?: () => Array<any>,
+    protected notifyPropertyName?: string
   ) {
     host.addController(this);
   }
@@ -32,8 +33,9 @@ export class StoreSubscriber<V> implements ReactiveController {
 
       if (store) {
         this._unsubscribe = store.subscribe((value) => {
+          const prevValue = this.value
           this.value = value;
-          this.host.requestUpdate();
+          this.notify(this.notifyPropertyName || 'value', this.notifyPropertyName ? { value: prevValue } : prevValue);
         });
       }
       this._previousStore = store;
@@ -67,5 +69,13 @@ export class StoreSubscriber<V> implements ReactiveController {
 
   store() {
     return this.getStore();
+  }
+
+  protected notify(key: string, value: unknown): void {
+    if (this.host.requestUpdate.length > 0) {
+      (this.host as ReactiveElement).requestUpdate(key, value);
+    } else {
+      this.host.requestUpdate();
+    }
   }
 }

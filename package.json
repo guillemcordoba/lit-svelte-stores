@@ -1,11 +1,12 @@
 {
   "name": "lit-svelte-stores",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Lit controllers to use svelte stores to manage state",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "type": "module",
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsc",
     "build-watch": "tsc -w",
     "start": "npm run build && concurrently -k \"npm run build-watch\" \"wds --config demo/web-dev-server.config.mjs\""
