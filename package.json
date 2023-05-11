@@ -21,10 +21,10 @@
   },
   "homepage": "https://github.com/guillemcordoba/lit-svelte-stores#readme",
   "dependencies": {
-    "@lit-labs/task": "^1.1.2",
-    "lit": "^2.0.0",
+    "@lit-labs/task": "^2.1.1",
+    "lit": "^2.7.4",
     "lodash-es": "^4.17.21",
-    "svelte": "^3.38.3"
+    "svelte": "^3.59.1"
   },
   "devDependencies": {
     "@web/dev-server": "^0.1.17",
