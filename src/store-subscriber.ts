@@ -1,4 +1,4 @@
-import { Readable, Unsubscriber, get } from "svelte/store";
+import { Readable, Unsubscriber } from "svelte/store";
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import isEqual from "lodash-es/isEqual.js";
 
@@ -10,33 +10,44 @@ import isEqual from "lodash-es/isEqual.js";
  */
 export class StoreSubscriber<V> implements ReactiveController {
   value!: V;
+  store!: Readable<V>;
 
   public _unsubscribe: Unsubscriber | undefined;
 
-  private _previousStore: Readable<V> | undefined;
   private _previousArgs: Array<any> | undefined;
 
   constructor(
     protected host: ReactiveControllerHost,
-    protected getStore: () => Readable<V> | undefined,
+    protected getStore: () => Readable<V>,
     protected resubscribeIfChanged?: () => Array<any>
   ) {
+    if (!this.resubscribeIfChanged) {
+      // Try to infer as best as possible
+      const getStoreFn = this.getStore.toString();
+
+      const matches = getStoreFn.matchAll(
+        /[^\_\$a-zA-Z0-9]this\.([\$\_a-zA-Z0-9]+)/gm
+      );
+
+      const propertyKeys = [...matches].map((match) => match[1]);
+
+      this.resubscribeIfChanged = () =>
+        propertyKeys.map((key) => this.host[key]);
+    }
     host.addController(this);
   }
 
   hostUpdate() {
-    const store = this.store();
-
-    if (this.shouldResubscribe(store)) {
+    if (this.shouldResubscribe()) {
+      this.store = this.getStore();
       this.unsubscribe();
 
-      if (store) {
-        this._unsubscribe = store.subscribe((value) => {
+      if (this.store) {
+        this._unsubscribe = this.store.subscribe((value) => {
           this.value = value;
           this.host.requestUpdate();
         });
       }
-      this._previousStore = store;
     }
   }
 
@@ -51,21 +62,10 @@ export class StoreSubscriber<V> implements ReactiveController {
     }
   }
 
-  shouldResubscribe(store: Readable<V> | undefined) {
-    if (this.resubscribeIfChanged) {
-      const args = this.resubscribeIfChanged();
-      const prev = this._previousArgs;
-      this._previousArgs = args;
-      return !isEqual(args, prev);
-    } else {
-      if (store === this._previousStore) return false;
-      if (store && this._previousStore && get(store) === this.value)
-        return false;
-      return true;
-    }
-  }
-
-  store() {
-    return this.getStore();
+  shouldResubscribe() {
+    const args = this.resubscribeIfChanged!();
+    const prev = this._previousArgs;
+    this._previousArgs = args;
+    return !isEqual(args, prev);
   }
 }

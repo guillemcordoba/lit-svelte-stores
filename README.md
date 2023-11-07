@@ -1,8 +1,35 @@
 # lit-svelte-stores
 
-Lit controller to use svelte stores as state management.
+Lit controller and directive to use svelte stores as state management.
 
 ## Usage
+
+### Using the directive
+
+```js
+import { LitElement, html } from "lit";
+import { writable } from "svelte/store";
+import { subscribe } from "lit-svelte-stores";
+
+const store = writable(0);
+
+setInterval(() => {
+  store.update((count) => count + 1);
+}, 1000);
+
+class SampleElement extends LitElement {
+  render() {
+    return html`Count: ${subscribe(
+      this.store, 
+      value => html`${value}` // Render function, will get executed every time the value changes
+    )}`;
+  }
+}
+```
+
+This will trigger a re-render every time the store emits a new value.
+
+### Using the controller
 
 ```js
 import { LitElement, html } from "lit";

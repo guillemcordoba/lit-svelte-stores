@@ -18,23 +18,13 @@
     <script type="module">
       import { LitElement, html } from "lit";
       import { get, readable, writable, derived } from "svelte/store";
-      import { StoreSubscriber, TaskSubscriber } from "../dist";
+      import { StoreSubscriber, subscribe } from "../dist";
 
       let store = writable(0);
 
       setInterval(() => {
         store.update((count) => count + 1);
       }, 1000);
-
-      let store2 = readable(5000);
-
-      function doTask(id) {
-        return new Promise((r) =>
-          setTimeout(() => {
-            r(derived(store, (count) => `${id}: ${count}`));
-          }, 3000)
-        );
-      }
 
       class SampleElement extends LitElement {
         static get properties() {
@@ -48,12 +38,10 @@
         constructor() {
           super();
 
-          this.task = new TaskSubscriber(
-            this,
-            ([id]) => doTask(id),
-            () => [this.id]
-            );
-          this.store = new StoreSubscriber(this, () => store);
+          this.store = new StoreSubscriber(this, () => {
+            console.log("hey", this.id);
+            return store;
+          });
 
           setTimeout(() => {
             this.id = "ho";
@@ -62,19 +50,15 @@
 
         firstUpdated() {
           this.id = "hey";
-
         }
 
         render() {
           // if (this.task.loading) return html`Loading...`;
 
           return html`Count:
-            ${this.task.render({
-              pending: () => html`Loading`,
-              complete: (v) => v,
-            })}
             <br />
-            Count: ${this.store.value}`;
+            Controller: ${this.store.value} Directive:
+            ${subscribe(store, (v) => html`${v}`)} `;
         }
       }
 
