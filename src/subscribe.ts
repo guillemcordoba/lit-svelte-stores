@@ -1,10 +1,10 @@
-import { directive } from "lit/directive.js";
+import { directive, DirectiveResult } from "lit/directive.js";
 import { AsyncDirective } from "lit/async-directive.js";
 import { noChange, TemplateResult } from "lit";
 
-import { Readable } from "svelte/store";
+import { readable, Readable } from "svelte/store";
 
-class SubscribeDirective extends AsyncDirective {
+class SubscribeDirective<T> extends AsyncDirective {
   private __store?: Readable<any>;
   private __unsubscribe?: () => void;
   private __template?: (value: any) => TemplateResult;
@@ -60,4 +60,7 @@ class SubscribeDirective extends AsyncDirective {
  * Renders a signal and subscribes to it, updating the part when the store
  * changes.
  */
-export const subscribe = directive(SubscribeDirective);
+export const subscribe = directive(SubscribeDirective) as <T>(
+  store: Readable<T>,
+  template: (value: T) => TemplateResult
+) => DirectiveResult<typeof SubscribeDirective>;
