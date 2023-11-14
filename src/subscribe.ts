@@ -1,10 +1,10 @@
 import { directive, DirectiveResult } from "lit/directive.js";
 import { AsyncDirective } from "lit/async-directive.js";
-import { noChange, TemplateResult } from "lit";
+import { TemplateResult } from "lit";
 
-import { readable, Readable } from "svelte/store";
+import { get, Readable } from "svelte/store";
 
-class SubscribeDirective<T> extends AsyncDirective {
+class SubscribeDirective extends AsyncDirective {
   private __store?: Readable<any>;
   private __unsubscribe?: () => void;
   private __template?: (value: any) => TemplateResult;
@@ -25,11 +25,7 @@ class SubscribeDirective<T> extends AsyncDirective {
       });
     }
 
-    // We use peek() so that the signal access is not tracked by the effect
-    // created by SignalWatcher.performUpdate(). This means that a signal
-    // update won't trigger a full element update if it's only passed to
-    // watch() and not otherwise accessed by the element.
-    return noChange;
+    return template(get(this.__store));
   }
 
   protected override disconnected(): void {

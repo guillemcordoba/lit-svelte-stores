@@ -58,7 +58,10 @@
           return html`Count:
             <br />
             Controller: ${this.store.value} Directive:
-            ${subscribe(store, (v) => html`${v}`)} `;
+            ${subscribe(
+              store,
+              (v) => html`${subscribe(store, (v2) => html`${v + v2}`)}`
+            )} `;
         }
       }
 
